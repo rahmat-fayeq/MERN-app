@@ -38,7 +38,8 @@ const registerUser = asynHandler(async (req,res)=>{
     res.status(201).json({
         _id: user._id,
         name:user.name,
-        email:user.email
+        email:user.email,
+        token: generateToken(user._id)
     });
 
 });
@@ -65,7 +66,8 @@ const loginUser = asynHandler(async (req,res)=>{
         res.status(200).json({
             _id:user._id,
             name:user.name,
-            email:user.email
+            email:user.email,
+            token: generateToken(user._id)
         });
     }
     else{
@@ -82,6 +84,11 @@ const loginUser = asynHandler(async (req,res)=>{
 const getMe = asynHandler(async (req,res)=>{
     res.json({message: 'user detials'});
 });
+
+// Generate JWT
+const generateToken = (id)=>{
+    return jwt.sign({id},process.env.JWT_SECRET,{expiresIn: '24h'});
+}
 
 module.exports = {registerUser,loginUser,getMe};
 
