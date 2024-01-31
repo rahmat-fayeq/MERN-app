@@ -1,5 +1,6 @@
 const asynHandler = require('express-async-handler');
 const Goal = require('../model/goalModel');
+const User = require('../model/userModel');
 /**
  * @desc   Get goals
  * @route  GET /api/goals
@@ -7,7 +8,7 @@ const Goal = require('../model/goalModel');
  * 
  */
 const getGoals = asynHandler(async(req,res) =>{
-    const goals = await Goal.find();
+    const goals = await Goal.find({user: req.user.id});
     res.status(200).json(goals);
 });
 /**
@@ -22,6 +23,7 @@ const setGoal = asynHandler(async(req,res) =>{
         throw new Error('Text field cannot be empty!');
     }
     const goal = await Goal.create({
+        user: req.user.id,
         text: req.body.text
     });
     res.status(201).json(goal);
@@ -42,7 +44,23 @@ const updateGoal = asynHandler(async(req,res) =>{
         res.status(400);
         throw new Error('Text field cannot be empty!');
     }
-    const updatedGoal = await Goal.findByIdAndUpdate(req.params.id,{text:req.body.text},{new:true});
+
+    const user = await User.findById(req.user.id);
+    if(!user){
+        res.status(404);
+        throw new Error('User not found!');
+    }
+
+    if(user.id !== goal.user.toString()){
+        res.status(401);
+        throw new Error('User not authorized!');
+    }
+
+    const updatedGoal = await Goal.findByIdAndUpdate(req.params.id,{
+        text:req.body.text,
+        user: user.id
+    }
+    ,{new:true});
     res.status(200).json(updatedGoal);
 });
 /**
