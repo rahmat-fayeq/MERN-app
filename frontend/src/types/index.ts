@@ -3,3 +3,8 @@ export interface IRegister {
   email: String;
   password: String;
 }
+
+export interface ILogin {
+  email: String;
+  password: String;
+}

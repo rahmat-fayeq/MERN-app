@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IRegister } from "../types";
+import { ILogin, IRegister } from "../types";
 
 const APP_URL = "/api/users";
 
@@ -17,5 +17,14 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
-const authService = { register, logout };
+// Login user
+const login = async (userData: ILogin) => {
+  const response = await axios.post(`${APP_URL}/login`, userData);
+  if (response.data) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+  return response.data;
+};
+
+const authService = { register, logout, login };
 export default authService;
