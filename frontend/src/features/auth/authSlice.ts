@@ -8,7 +8,12 @@ const user = localStorage.getItem("user")
   : null;
 
 export interface IUser {
-  user: string | null;
+  user: {
+    _id: String;
+    name: String;
+    email: String;
+    token: String;
+  } | null;
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
@@ -16,7 +21,7 @@ export interface IUser {
 }
 
 const initialState: IUser = {
-  user: user ? user : null,
+  user: user,
   isError: false,
   isSuccess: false,
   isLoading: false,

@@ -8,3 +8,7 @@ export interface ILogin {
   email: String;
   password: String;
 }
+
+export interface IGoal {
+  text: String;
+}
