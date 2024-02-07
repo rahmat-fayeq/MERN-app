@@ -42,6 +42,10 @@ const Register = () => {
 
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!name || !email || !password || !password2) {
+      toast.error("All filed are required");
+      return;
+    }
     if (password !== password2) {
       toast.error("Password and Confirm Password must be the same");
       return;

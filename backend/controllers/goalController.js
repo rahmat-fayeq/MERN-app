@@ -45,20 +45,19 @@ const updateGoal = asynHandler(async(req,res) =>{
         throw new Error('Text field cannot be empty!');
     }
 
-    const user = await User.findById(req.user.id);
-    if(!user){
+    if(!req.user){
         res.status(404);
         throw new Error('User not found!');
     }
 
-    if(user.id !== goal.user.toString()){
+    if(req.user.id !== goal.user.toString()){
         res.status(401);
         throw new Error('User not authorized!');
     }
 
     const updatedGoal = await Goal.findByIdAndUpdate(req.params.id,{
         text:req.body.text,
-        user: user.id
+        user: req.user.id
     }
     ,{new:true});
     res.status(200).json(updatedGoal);
@@ -74,6 +73,10 @@ const deleteGoal = asynHandler(async(req,res) =>{
     if(!goal){
         res.status(404);
         throw new Error("Goal not found!");
+    }
+    if(goal.user.toString() !== req.user.id){
+        res.status(401);
+        throw new Error('User not authorized!');
     }
     await goal.deleteOne();
     res.status(200).json({id: req.params.id});
